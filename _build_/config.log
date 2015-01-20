@@ -1,6 +1,6 @@
-# project gqr (1500) configured on Tue Jan 20 16:35:46 2015 by
+# project gqr (1500) configured on Tue Jan 20 19:46:05 2015 by
 # waf 1.5.19 (abi 7, python 20706f0 on linux2)
-# using ./waf configure
+# using /home/xiaoyu/Repos/gqr-1500/waf configure --prefix /usr/local
 #
 
 ----------------------------------------

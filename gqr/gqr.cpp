@@ -36,13 +36,14 @@
 //#include "commands/SubcommandMultiPathConsistency.h"
 
 #include "gqr.h"
-
 #include "commands/SubcommandAbstract.h"
 #include "commands/SubcommandHelp.h"
 #include "commands/SubcommandVersion.h"
 #include "commands/SubcommandCheck.h"
 #include "commands/SubcommandPathConsistency.h"
 #include "commands/SubcommandConsistency.h"
+
+#include "commands/SubcommandDetectMin.h"
 
 /**
  * Generic solver for binary constraint networks.
@@ -75,6 +76,9 @@ static SubcommandAbstract* getSubcommand(const int argc, char *argv[]) {
 		return new SubcommandPathConsistency(args);
 	if (s == "c" || s == "consistency")
 		return new SubcommandConsistency(args);
+    if (s == "d" || s == "detectmin")
+        return new SubcommandDetectMin(args);
+
 
 /*
 //	Disabled for now

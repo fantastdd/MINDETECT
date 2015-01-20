@@ -1,15 +1,16 @@
-#ifndef SUBCOMMANDMINDETECT_H_
-#define SUBCOMMANDMINDETECT_H_
+#ifndef SUBCOMMANDDETECTMIN_H_
+#define SUBCOMMANDDETECTMIN_H_
 
 #include "gqr.h"
 #include "commands/SubcommandAbstract.h"
 
-class SubcommandMinDetect: public SubcommandAbstract {
+class SubcommandDetectMin: public SubcommandAbstract {
 	public:
-		SubcommandMinDetect(const std::vector<std::string>&);
-		virtual ~SubcommandPathConistency();
-		int run();
-		
-		static std::string helpString;
+       static std::string helpString;
+       SubcommandDetectMin(const std::vector<std::string>& a) : SubcommandAbstract(a) { }
+       virtual ~SubcommandDetectMin() { }
+	   int run();
 
-#endif /* SUBCOMMANDMINDETECT_H_ */
+
+};
+#endif
