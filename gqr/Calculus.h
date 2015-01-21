@@ -24,8 +24,9 @@
 
 #include <vector>
 #include <string>
-
+#include <algorithm>
 #include "Relation.h"
+
 
 class Splitter;
 
@@ -83,7 +84,25 @@ class Calculus {
 			/** Destructor */
 			~Calculus();
 
+		// Get all the combinations of n rels
+		std::vector<Relation> rels;
+		const std::vector<Relation>& getRelsCombos(const size_t labelSize){
+			size_t n = getNumberOfBaseRelations();
+			std::vector<bool> comboFlags(n);
+			
+			std::fill(comboFlags.begin() + n - labelSize, comboFlags.end(), true);
+			do {
+				Relation rel;
+				for (size_t i = 0; i < n; i++){
+					if (comboFlags[i]) {
+						rel.set(i);
+					}
+				}
+				rels.push_back(rel);
+			} while (std::next_permutation(comboFlags.begin(), comboFlags.end()));
+			return rels;
 
+		}
 		// Get the identity base relation
 		size_t getIdentityBaseRelation() const { return identity; }
 

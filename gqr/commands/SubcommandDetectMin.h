@@ -4,13 +4,16 @@
 #include "gqr.h"
 #include "commands/SubcommandAbstract.h"
 
-class SubcommandDetectMin: public SubcommandAbstract {
+class SubcommandDetectMin: public SubcommandAbstract{
+    private:
+    	 std::vector<std::string> unusedArgs;
+    	 Calculus* calculus;
+    	 std::vector<std::size_t> unusedRels;
+       	 void genCSP(const size_t nodeNum, const size_t labelSize);
 	public:
-       static std::string helpString;
-       SubcommandDetectMin(const std::vector<std::string>& a) : SubcommandAbstract(a) { }
-       virtual ~SubcommandDetectMin() { }
-	   int run();
-
+        SubcommandDetectMin(const std::vector<std::string>&);
+        virtual ~SubcommandDetectMin(); 
+	    int run();
 
 };
 #endif

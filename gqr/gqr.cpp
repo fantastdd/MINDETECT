@@ -65,7 +65,6 @@ static SubcommandAbstract* getSubcommand(const int argc, char *argv[]) {
 	// The first argument determines the type of the subcommand
 	// Then delegate the parameter parsing to the specific command
 
-
 	if (s == "help")
 		return new SubcommandHelp(args);
 	if (s == "version")
