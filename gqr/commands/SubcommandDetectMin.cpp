@@ -6,34 +6,73 @@
 
 #include "Calculus.h"
 #include "Relation.h"
+#include "CSPSparse.h"
 SubcommandDetectMin::SubcommandDetectMin(const std::vector<std::string>& a): SubcommandAbstract(a),
 	unusedArgs(commandLine), calculus(NULL) {
  		if (!commandLine.empty()) {
-		calculus = readCalculus(unusedArgs);
-		if (!calculus)
-			return;
-}
+ 			calculus = readCalculus(unusedArgs);
+ 			if (!calculus)
+ 				return;
+ 		}
 
 	}
 
 int SubcommandDetectMin::run() {
-	// initialize the search tree.
-	genCSP(1,2);
-	std::vector<Relation> rels = calculus->getRelsCombos(1);
-	std::cout << rels.size() << "\n";
-	for (size_t i = 0; i < rels.size(); i++)
-		std::cout << calculus->relationToString(rels[i]) <<",";
-	std::cout << "\nend\n";
+	size_t nodeNum = 4;
+	size_t labelSize = 2;
+
+	genCSP(nodeNum);
+	makeRels(labelSize);
+	makePairs(nodeNum);
+
+	makeCSPs();
+
+	
 //	genRels(2,);
 	if (commandLine.empty())
 		return 0;
 	return 1;
 }
-//void genRels(const size_t labelSize){
-//	unusedRels
-//}
-void SubcommandDetectMin::genCSP(const size_t nodeNum, const size_t labelSize){
-	std::cout << "Hello Wolrd in genCSP\n";
+
+void SubcommandDetectMin::makeRels(const size_t labelSize){
+	unusedRels = calculus->getRelsCombos(labelSize);
+	/*** print rels 
+
+	for (size_t i = 0; i < unusedRels.size(); i++)
+		std::cout << calculus->relationToString(unusedRels[i]) <<",";
+	std::cout << "\nend\n";
+	***/
+}
+void SubcommandDetectMin::makeCSPs()
+{
+	while (!unusedPairs.empty())
+	{	
+		std::pair<size_t, size_t> lpair = unusedPairs.pop_back();
+		for (auto rel : unusedRels)
+		{
+
+			constraint = (pair, rel);
+			check path consistency
+			if consistent, continue
+		}
+
+	}
+	//check consistency;
+	//if not consistent, return this csp
+	//check sub minimal network
+}
+void SubcommandDetectMin::makePairs(const size_t nodeNum){
+	for (size_t i = 0; i < nodeNum - 1; i++)
+		for (size_t j = i + 1; j < nodeNum; j++)
+			unusedPairs.push_back(std::make_pair(i, j));
+}
+
+
+void SubcommandDetectMin::genCSP(const size_t nodeNum)
+{
+	const std::string name = "csp_1";
+	//Generate CSP
+	csp = new CSPSparse(nodeNum, *calculus, name);
 }
 
 

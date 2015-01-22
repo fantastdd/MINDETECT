@@ -85,8 +85,8 @@ class Calculus {
 			~Calculus();
 
 		// Get all the combinations of n rels
-		std::vector<Relation> rels;
-		const std::vector<Relation>& getRelsCombos(const size_t labelSize){
+		mutable std::vector<Relation> rels;
+		const std::vector<Relation>& getRelsCombos(const size_t labelSize) const{
 			size_t n = getNumberOfBaseRelations();
 			std::vector<bool> comboFlags(n);
 			
