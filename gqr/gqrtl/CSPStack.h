@@ -24,6 +24,7 @@
 #include <cassert>
 #include <vector>
 #include <list>
+#include <iostream>
 
 #include "Tuple.h"
 #include "gqrtl/CSP.h"
@@ -62,7 +63,9 @@ class CSPStack {
 
 			csp.setConstraint(var.x, var.y, r);
 		}
-		inline void setConstraint(const size_t i, const size_t j, const R r) { return setValue(Tuple(i,j), r); }
+		inline void setConstraint(const size_t i, const size_t j, const R r) { 
+			
+			return setValue(Tuple(i,j), r); }
 
 		void resetToLastState() {
 			assert(!trail.empty());

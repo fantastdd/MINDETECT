@@ -60,17 +60,25 @@ void SubcommandDetectMin::makeCSPs()
 		unusedPairs.pop_back();
 		for (std::vector<Relation>::iterator it = unusedRels.begin(); it != unusedRels.end(); it++)
 		{
-
-			(*current_state).setConstraint(lpair.first, lpair.second, *it);
+			gqrtl::CSPStack<gqrtl::Relation8, gqrtl::CalculusOperations<gqrtl::Relation8> >  copy_state = *current_state;
+			//current_state.setConstraint(lpair.first, lpair.second, *it);
+			std::cout << "1" ;
+			
+			copy_state.setConstraint(lpair.first, lpair.second, *it);
+			//std::cout << "2";
+			//copy_state.getCSP();
+			
 			//check path consistency
 			bool path_consistent = true;
-			path_consistent = (propagation.enforce(*current_state).empty());
 			
-			std::cout << path_consistent;
+			//path_consistent = (propagation.enforce(copy_state).empty());
+			
+			//std::cout << path_consistent;
 			//if consistent, continue
 		//}
 		}
 	}
+	std::cout << "pass";
 	//check consistency;
 	//if not consistent, return this csp
 	//check sub minimal network
