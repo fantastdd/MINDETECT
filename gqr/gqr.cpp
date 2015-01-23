@@ -76,7 +76,10 @@ static SubcommandAbstract* getSubcommand(const int argc, char *argv[]) {
 	if (s == "c" || s == "consistency")
 		return new SubcommandConsistency(args);
     if (s == "d" || s == "detectmin")
-        return new SubcommandDetectMin(args);
+    {
+    		
+        	return new SubcommandDetectMin(args);
+    }
 
 
 /*

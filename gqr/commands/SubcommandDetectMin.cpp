@@ -7,8 +7,16 @@
 #include "Calculus.h"
 #include "Relation.h"
 #include "CSPSparse.h"
+#include "gqrtl/CSP.h"
+#include "gqrtl/CSPStack.h"
+#include "gqrtl/RelationFixedBitset.h"
+#include "gqrtl/RelationFixedBitset.h"
+
+#include "gqrtl/WeightedTripleIterator.h"
+
 SubcommandDetectMin::SubcommandDetectMin(const std::vector<std::string>& a): SubcommandAbstract(a),
 	unusedArgs(commandLine), calculus(NULL) {
+
  		if (!commandLine.empty()) {
  			calculus = readCalculus(unusedArgs);
  			if (!calculus)
@@ -21,7 +29,7 @@ int SubcommandDetectMin::run() {
 	size_t nodeNum = 4;
 	size_t labelSize = 2;
 
-	genCSP(nodeNum);
+	iniCSP(nodeNum);
 	makeRels(labelSize);
 	makePairs(nodeNum);
 
@@ -45,17 +53,23 @@ void SubcommandDetectMin::makeRels(const size_t labelSize){
 }
 void SubcommandDetectMin::makeCSPs()
 {
+
 	while (!unusedPairs.empty())
 	{	
-		std::pair<size_t, size_t> lpair = unusedPairs.pop_back();
-		for (auto rel : unusedRels)
+		std::pair<size_t, size_t> lpair = unusedPairs.back();
+		unusedPairs.pop_back();
+		for (std::vector<Relation>::iterator it = unusedRels.begin(); it != unusedRels.end(); it++)
 		{
 
-			constraint = (pair, rel);
-			check path consistency
-			if consistent, continue
+			(*current_state).setConstraint(lpair.first, lpair.second, *it);
+			//check path consistency
+			bool path_consistent = true;
+			path_consistent = (propagation.enforce(*current_state).empty());
+			
+			std::cout << path_consistent;
+			//if consistent, continue
+		//}
 		}
-
 	}
 	//check consistency;
 	//if not consistent, return this csp
@@ -68,11 +82,15 @@ void SubcommandDetectMin::makePairs(const size_t nodeNum){
 }
 
 
-void SubcommandDetectMin::genCSP(const size_t nodeNum)
+void SubcommandDetectMin::iniCSP(const size_t nodeNum)
 {
 	const std::string name = "csp_1";
 	//Generate CSP
-	csp = new CSPSparse(nodeNum, *calculus, name);
+
+	csp = new gqrtl::CSP<gqrtl::Relation8, gqrtl::CalculusOperations<gqrtl::Relation8> >(nodeNum, *calculus, name);
+
+	current_state = new gqrtl::CSPStack<gqrtl::Relation8, gqrtl::CalculusOperations<gqrtl::Relation8> >(*csp);
+	//gqrtl::CSPStack state(*csp);
 }
 
 
