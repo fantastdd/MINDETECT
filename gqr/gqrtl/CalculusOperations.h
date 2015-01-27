@@ -23,7 +23,7 @@
 
 #include <cassert>
 #include <vector>
-
+#include <iostream>
 #include "Calculus.h"
 
 #include "Splitter.h"
@@ -104,6 +104,7 @@ class CalculusOperations {
 
 			for (typename R::const_iterator it = r.begin(); it != r.end(); ++it)
 				res.set(calculus.getBaseRelationConverse(*it)); // Assumption: set is no worse than operator|=
+			
 			return res;
 		}
 		inline R getConverse(const R& r) const { return computeConverse(r); }
@@ -233,6 +234,7 @@ std::cout << "Using " << relations*Relation8::memSize() << " byte\n";
 template<> inline
 Relation8 CalculusOperations<Relation8>::getConverse(const Relation8& r) const {
 	const Relation8& result = precomputedConverseTable[r.lowestWord()];
+	
 	assert(result == computeConverse(r));
 	return result;
 }

@@ -27,7 +27,7 @@
 #include <vector>
 #include <string>
 #include <cassert>
-
+#include <iostream>
 #include "CSPSparse.h"
 
 // for conversion constructor
@@ -78,7 +78,6 @@ class CSP {
 				matrix[getPos(i,i)] = calculus.getIdentityRelation();
 			}
 		}
-
 		/** build from sparse CSP with general relation representation */
 		CSP(const CSPSparse& csp, const C& nc) : calculus(nc), size(csp.getSize()),
 			name(csp.name) {
@@ -109,13 +108,15 @@ class CSP {
 		* @param r the relation between node x and node y
 		*/
 		void setConstraint(const size_t x, const size_t y, const R r) {
+			
 			matrix[getPos(x,y)] = r;
 			matrix[getPos(y,x)] = calculus.getConverse(r);
+
 		}
 
 		/** Get a constraint @param x a node @param y another node @return the relation between x and y */
 		inline const R& getConstraint(const size_t x, const size_t y) const {
-			// network should be normalized
+			// network should  normalized
 			assert(matrix[getPos(y,x)] == calculus.getConverse(matrix[getPos(x,y)]));
 			return matrix[getPos(x,y)];
 		}

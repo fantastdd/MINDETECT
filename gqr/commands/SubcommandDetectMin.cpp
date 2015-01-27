@@ -22,7 +22,7 @@ SubcommandDetectMin::SubcommandDetectMin(const std::vector<std::string>& a): Sub
  			if (!calculus)
  				return;
  		}
-
+	co = new gqrtl::CalculusOperations<gqrtl::Relation8>(*calculus);
 	}
 
 int SubcommandDetectMin::run() {
@@ -33,10 +33,24 @@ int SubcommandDetectMin::run() {
 	makeRels(labelSize);
 	makePairs(nodeNum);
 
-	makeCSPs();
+	bool result = 	makeCSPs();
+	if(result)
+		std::cout << " CSP instance found";
+	gqrtl::CSP<gqrtl::Relation8, gqrtl::CalculusOperations<gqrtl::Relation8> > last_state = current_state->getCSP();
 
-	
-//	genRels(2,);
+	std::cout << last_state.getSize()-1 << " " << last_state.name << std::endl;
+	for (size_t i = 0; i < last_state.getSize(); ++i)
+		for (size_t j = i+1; j < last_state.getSize(); ++j) {
+			const gqrtl::Relation8& rel = last_state.getConstraint(i,j);
+			if (rel != co->getUniversalRelation()) {
+				std::cout << i << " " << j << " ";
+				std::cout << co->getCalculus().relationToString(rel.getRelation());
+				std::cout << std::endl;
+			}
+		}
+		std::cout << ".\n";
+
+
 	if (commandLine.empty())
 		return 0;
 	return 1;
@@ -44,14 +58,8 @@ int SubcommandDetectMin::run() {
 
 void SubcommandDetectMin::makeRels(const size_t labelSize){
 	unusedRels = calculus->getRelsCombos(labelSize);
-	/*** print rels 
-
-	for (size_t i = 0; i < unusedRels.size(); i++)
-		std::cout << calculus->relationToString(unusedRels[i]) <<",";
-	std::cout << "\nend\n";
-	***/
 }
-void SubcommandDetectMin::makeCSPs()
+bool SubcommandDetectMin::makeCSPs()
 {
 
 	while (!unusedPairs.empty())
@@ -60,25 +68,44 @@ void SubcommandDetectMin::makeCSPs()
 		unusedPairs.pop_back();
 		for (std::vector<Relation>::iterator it = unusedRels.begin(); it != unusedRels.end(); it++)
 		{
-			gqrtl::CSPStack<gqrtl::Relation8, gqrtl::CalculusOperations<gqrtl::Relation8> >  copy_state = *current_state;
-			//current_state.setConstraint(lpair.first, lpair.second, *it);
-			std::cout << "1" ;
-			
-			copy_state.setConstraint(lpair.first, lpair.second, *it);
+			current_state->backupState();
+			current_state->setConstraint(lpair.first, lpair.second, *it);
+			//std::cerr << "1" << "2";
 			//std::cout << "2";
+			//copy_state.setConstraint(lpair.first, lpair.second, *it);
+			//std::cout << 0;
 			//copy_state.getCSP();
 			
 			//check path consistency
 			bool path_consistent = true;
 			
-			//path_consistent = (propagation.enforce(copy_state).empty());
+			path_consistent = (propagation.enforce(*current_state).empty());
+
+			if (path_consistent)
+			{
+				//go deeper
+				if (unusedPairs.empty())// reach a leaf;
+			        return true;
+		        else
+		        	if (makeCSPs())
+		        		return true;
+		        
+			}
 			
-			//std::cout << path_consistent;
-			//if consistent, continue
-		//}
+				//reset the constraint;
+				std::cout << "Inconsistency, check another rel\n";
+				current_state->resetToLastState();
+			
+		
 		}
+
+		//If all rels result in an inconsistency, jump back
+		unusedPairs.push_back(lpair);
+		return false;
 	}
-	std::cout << "pass";
+
+	std::cout << "\n Reach the Maximum Depth\n";
+	return false;
 	//check consistency;
 	//if not consistent, return this csp
 	//check sub minimal network
@@ -86,19 +113,21 @@ void SubcommandDetectMin::makeCSPs()
 void SubcommandDetectMin::makePairs(const size_t nodeNum){
 	for (size_t i = 0; i < nodeNum - 1; i++)
 		for (size_t j = i + 1; j < nodeNum; j++)
+		{
+			
 			unusedPairs.push_back(std::make_pair(i, j));
+		}
 }
 
 
 void SubcommandDetectMin::iniCSP(const size_t nodeNum)
 {
 	const std::string name = "csp_1";
-	//Generate CSP
 
-	csp = new gqrtl::CSP<gqrtl::Relation8, gqrtl::CalculusOperations<gqrtl::Relation8> >(nodeNum, *calculus, name);
+	csp = new gqrtl::CSP<gqrtl::Relation8, gqrtl::CalculusOperations<gqrtl::Relation8> >(nodeNum, *co, name);
 
 	current_state = new gqrtl::CSPStack<gqrtl::Relation8, gqrtl::CalculusOperations<gqrtl::Relation8> >(*csp);
-	//gqrtl::CSPStack state(*csp);
+	
 }
 
 

@@ -98,7 +98,7 @@ class Calculus {
 						rel.set(i);
 					}
 				}
-				rels.push_back(rel);
+				rels.push_back(rel.getRelation());
 			} while (std::next_permutation(comboFlags.begin(), comboFlags.end()));
 			return rels;
 
@@ -111,7 +111,9 @@ class Calculus {
 		const Relation& getUniversalRelation() const { return universalRelation; }
 
 		// Get the converse of a base relation
-		inline size_t getBaseRelationConverse(const size_t i) const { return converseTable[i]; }
+		inline size_t getBaseRelationConverse(const size_t i) const { 
+			
+			return converseTable[i]; }
 
 		// Get the converse of an arbitrary relation
 		inline Relation getConverse(const Relation& r) const {

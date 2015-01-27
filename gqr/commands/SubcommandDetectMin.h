@@ -15,6 +15,7 @@ class SubcommandDetectMin: public SubcommandAbstract{
     private:
     	 std::vector<std::string> unusedArgs;
     	 const Calculus* calculus;
+         const gqrtl::CalculusOperations<gqrtl::Relation8>* co;
     	 std::vector<Relation> unusedRels;
     	 std::vector<std::pair <std::size_t, std::size_t> > unusedPairs;
 
@@ -24,11 +25,11 @@ class SubcommandDetectMin: public SubcommandAbstract{
          gqrtl::CSPStack<gqrtl::Relation8, gqrtl::CalculusOperations<gqrtl::Relation8> >*  current_state;
 
          gqrtl::WeightedTripleIterator<gqrtl::Relation8, gqrtl::CSPStack<gqrtl::Relation8, gqrtl::CalculusOperations<gqrtl::Relation8> > > propagation;
-
+ 
      	 void iniCSP(const size_t nodeNum);
      	 void makeRels (const size_t labelSize);
      	 void makePairs(const size_t nodeNum);
-     	 void makeCSPs();
+     	 bool makeCSPs();
 	public:
         SubcommandDetectMin(const std::vector<std::string>&);
         virtual ~SubcommandDetectMin(); 

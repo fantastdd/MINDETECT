@@ -59,9 +59,12 @@ class CSPStack {
 
 		// set a value
 		inline void setValue(const Tuple& var, const R r) {
+			//std::cerr << "CSPStack.h:setValue x: " << var.x  << " y:  " << var.y << " r: " << r <<"\n";
+
 			updateTrail(var, csp.getConstraint(var.x, var.y), r);
 
 			csp.setConstraint(var.x, var.y, r);
+
 		}
 		inline void setConstraint(const size_t i, const size_t j, const R r) { 
 			
