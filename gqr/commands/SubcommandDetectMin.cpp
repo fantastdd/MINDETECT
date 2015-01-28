@@ -13,7 +13,8 @@
 #include "gqrtl/RelationFixedBitset.h"
 
 #include "gqrtl/WeightedTripleIterator.h"
-
+#include "gqrtl/DFS.h"
+#include "utils/Logger.h"
 SubcommandDetectMin::SubcommandDetectMin(const std::vector<std::string>& a): SubcommandAbstract(a),
 	unusedArgs(commandLine), calculus(NULL) {
 
@@ -26,7 +27,7 @@ SubcommandDetectMin::SubcommandDetectMin(const std::vector<std::string>& a): Sub
 	}
 
 int SubcommandDetectMin::run() {
-	size_t nodeNum = 4;
+	size_t nodeNum = 5;
 	size_t labelSize = 2;
 
 	iniCSP(nodeNum);
@@ -35,7 +36,12 @@ int SubcommandDetectMin::run() {
 
 	bool result = 	makeCSPs();
 	if(result)
-		std::cout << " CSP instance found";
+		std::cout << " CSP instance found\n";
+	else
+		std::cout << " No Valid Instance \n";
+
+	//current_state->resetToLastState();
+
 	gqrtl::CSP<gqrtl::Relation8, gqrtl::CalculusOperations<gqrtl::Relation8> > last_state = current_state->getCSP();
 
 	std::cout << last_state.getSize()-1 << " " << last_state.name << std::endl;
@@ -49,8 +55,6 @@ int SubcommandDetectMin::run() {
 			}
 		}
 		std::cout << ".\n";
-
-
 	if (commandLine.empty())
 		return 0;
 	return 1;
@@ -80,20 +84,29 @@ bool SubcommandDetectMin::makeCSPs()
 			bool path_consistent = true;
 			
 			path_consistent = (propagation.enforce(*current_state).empty());
-
+			// check consistency
+			
+			Logger* log = NULL;
+			gqrtl::DFS<gqrtl::Relation8> search(current_state->getCSP(), log);
+			
+			
+			
 			if (path_consistent)
 			{
 				//go deeper
-				if (unusedPairs.empty())// reach a leaf;
-			        return true;
+				// reach a leaf;
+				if (unusedPairs.empty() && (search.run() == NULL))
+			    {    
+			    	return true;
+			    }
 		        else
 		        	if (makeCSPs())
 		        		return true;
 		        
 			}
 			
-				//reset the constraint;
-				std::cout << "Inconsistency, check another rel\n";
+				//reset constraint;
+				//x`std::cout << "Inconsistency, check another rel\n";
 				current_state->resetToLastState();
 			
 		
@@ -104,7 +117,7 @@ bool SubcommandDetectMin::makeCSPs()
 		return false;
 	}
 
-	std::cout << "\n Reach the Maximum Depth\n";
+	//std::cout << "\n Reach the Maximum Depth\n";
 	return false;
 	//check consistency;
 	//if not consistent, return this csp
@@ -114,9 +127,8 @@ void SubcommandDetectMin::makePairs(const size_t nodeNum){
 	for (size_t i = 0; i < nodeNum - 1; i++)
 		for (size_t j = i + 1; j < nodeNum; j++)
 		{
-			
 			unusedPairs.push_back(std::make_pair(i, j));
-		}
+	}
 }
 
 

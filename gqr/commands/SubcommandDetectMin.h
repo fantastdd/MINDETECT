@@ -30,6 +30,7 @@ class SubcommandDetectMin: public SubcommandAbstract{
      	 void makeRels (const size_t labelSize);
      	 void makePairs(const size_t nodeNum);
      	 bool makeCSPs();
+        
 	public:
         SubcommandDetectMin(const std::vector<std::string>&);
         virtual ~SubcommandDetectMin(); 
