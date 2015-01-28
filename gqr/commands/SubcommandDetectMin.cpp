@@ -30,13 +30,14 @@ int SubcommandDetectMin::run() {
 	size_t nodeNum = 5;
 	size_t labelSize = 2;
 
-	iniCSP(nodeNum);
 	makeRels(labelSize);
+	iniCSP(nodeNum, labelSize);
+
 	makePairs(nodeNum);
 
 	bool result = makeCSPs();
 	if(result)
-		std::cout << " CSP instance found\n";
+		std::cout << " CSP Instance Found\n";
 	else
 		std::cout << " No Valid Instance \n";
 
@@ -72,25 +73,20 @@ bool SubcommandDetectMin::makeCSPs()
 		unusedPairs.pop_back();
 		for (std::vector<Relation>::iterator it = unusedRels.begin(); it != unusedRels.end(); it++)
 		{
-			current_state->backupState();
+			
 			current_state->setConstraint(lpair.first, lpair.second, *it);
-			//std::cerr << "1" << "2";
-			//std::cout << "2";
-			//copy_state.setConstraint(lpair.first, lpair.second, *it);
-			//std::cout << 0;
-			//copy_state.getCSP();
-			
+
+			current_state->backupState();
 			//check path consistency
-			bool path_consistent = true;
-			
+			bool path_consistent = true;			
 			path_consistent = (propagation.enforce(*current_state).empty());
-			// check consistency
-			
-			//Logger* log = NULL;
-			gqrtl::DFS<gqrtl::Relation8> search(current_state->getCSP(), NULL);
+
 					
 			if (path_consistent)
 			{
+				// check consistency
+		 	    //Logger* log = NULL;
+				gqrtl::DFS<gqrtl::Relation8> search(current_state->getCSP(), NULL);
 				//If not a leaf
 				if (!unusedPairs.empty())
 				{
@@ -137,10 +133,12 @@ void SubcommandDetectMin::makePairs(const size_t nodeNum){
 }
 
 
-void SubcommandDetectMin::iniCSP(const size_t nodeNum)
+void SubcommandDetectMin::iniCSP(const size_t nodeNum, const size_t labelSize)
 {
-	const std::string name = "csp_1";
-
+	std::ostringstream stringStream;
+	stringStream << "#" << (nodeNum - 1) << "-N" << nodeNum << "-D" << (nodeNum - 1) << "-L" << labelSize;
+	
+	const std::string name = stringStream.str();
 	csp = new gqrtl::CSP<gqrtl::Relation8, gqrtl::CalculusOperations<gqrtl::Relation8> >(nodeNum, *co, name);
 
 	current_state = new gqrtl::CSPStack<gqrtl::Relation8, gqrtl::CalculusOperations<gqrtl::Relation8> >(*csp);

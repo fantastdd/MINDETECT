@@ -26,7 +26,7 @@ class SubcommandDetectMin: public SubcommandAbstract{
 
          gqrtl::WeightedTripleIterator<gqrtl::Relation8, gqrtl::CSPStack<gqrtl::Relation8, gqrtl::CalculusOperations<gqrtl::Relation8> > > propagation;
  
-     	 void iniCSP(const size_t nodeNum);
+     	 void iniCSP(const size_t nodeNum, const size_t labelSize);
      	 void makeRels (const size_t labelSize);
      	 void makePairs(const size_t nodeNum);
      	 bool makeCSPs();
