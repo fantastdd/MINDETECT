@@ -34,7 +34,7 @@ int SubcommandDetectMin::run() {
 	makeRels(labelSize);
 	makePairs(nodeNum);
 
-	bool result = 	makeCSPs();
+	bool result = makeCSPs();
 	if(result)
 		std::cout << " CSP instance found\n";
 	else
@@ -93,20 +93,27 @@ bool SubcommandDetectMin::makeCSPs()
 			
 			if (path_consistent)
 			{
-				//go deeper
-				// reach a leaf;
-				if (unusedPairs.empty() && (search.run() == NULL))
-			    {    
-			    	return true;
-			    }
-		        else
-		        	if (makeCSPs())
-		        		return true;
-		        
+				//If not a leaf
+				if (!unusedPairs.empty())
+				{
+					//check consistency
+					if (search.run() != NULL) //if consistent, go deeper
+						if (makeCSPs())
+							return true;
+				}
+				//If reach a leaf
+				else 
+				{
+					// reach a leaf;
+					if (search.run() == NULL)
+				    {    
+				    	return true;
+				    }
+		        }
 			}
 			
 				//reset constraint;
-				//x`std::cout << "Inconsistency, check another rel\n";
+				//std::cout << "Inconsistency, check another rel\n";
 				current_state->resetToLastState();
 			
 		
