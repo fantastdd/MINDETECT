@@ -86,11 +86,9 @@ bool SubcommandDetectMin::makeCSPs()
 			path_consistent = (propagation.enforce(*current_state).empty());
 			// check consistency
 			
-			Logger* log = NULL;
-			gqrtl::DFS<gqrtl::Relation8> search(current_state->getCSP(), log);
-			
-			
-			
+			//Logger* log = NULL;
+			gqrtl::DFS<gqrtl::Relation8> search(current_state->getCSP(), NULL);
+					
 			if (path_consistent)
 			{
 				//If not a leaf
