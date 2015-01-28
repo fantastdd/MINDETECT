@@ -41,7 +41,7 @@ int SubcommandDetectMin::run() {
 	else
 		std::cout << " No Valid Instance \n";
 
-	//current_state->resetToLastState();
+	current_state->resetToLastState();
 
 	gqrtl::CSP<gqrtl::Relation8, gqrtl::CalculusOperations<gqrtl::Relation8> > last_state = current_state->getCSP();
 
@@ -79,14 +79,15 @@ bool SubcommandDetectMin::makeCSPs()
 			current_state->backupState();
 			//check path consistency
 			bool path_consistent = true;			
-			path_consistent = (propagation.enforce(*current_state).empty());
-
+			//path_consistent = (propagation.enforce(*current_state).empty());
+			gqrtl::CSP<gqrtl::Relation8, gqrtl::CalculusOperations<gqrtl::Relation8> > _csp = current_state->getCSP();
+			path_consistent = (propagation.enforce(_csp)).empty();
 					
 			if (path_consistent)
 			{
 				// check consistency
 		 	    //Logger* log = NULL;
-				gqrtl::DFS<gqrtl::Relation8> search(current_state->getCSP(), NULL);
+				gqrtl::DFS<gqrtl::Relation8> search(_csp, NULL);
 				//If not a leaf
 				if (!unusedPairs.empty())
 				{
@@ -100,12 +101,13 @@ bool SubcommandDetectMin::makeCSPs()
 				{
 					// reach a leaf;
 					if (search.run() == NULL)
-				    {    
-				    	return true;
+				    {   
+				    	if(isMinimum(_csp))
+				        //check minimum consistency
+				    		return true;
 				    }
 		        }
-			}
-			
+			}		
 				//reset constraint;
 				//std::cout << "Inconsistency, check another rel\n";
 				current_state->resetToLastState();
@@ -124,6 +126,27 @@ bool SubcommandDetectMin::makeCSPs()
 	//if not consistent, return this csp
 	//check sub minimal network
 }
+
+bool SubcommandDetectMin::isMinimum(const gqrtl::CSP<gqrtl::Relation8, gqrtl::CalculusOperations<gqrtl::Relation8> >& csp){
+
+	gqrtl::CSPStack<gqrtl::Relation8, gqrtl::CalculusOperations<gqrtl::Relation8> > state(csp);
+	gqrtl::Relation8 uni = co->getUniversalRelation(); 
+	for (size_t i = 0; i < csp.getSize() - 1; i ++ )
+		for (size_t j = i; j < csp.getSize(); j ++ )
+		{
+			//remove the constraint
+			state.backupState();
+			state.setConstraint(i, j, uni);
+			gqrtl::DFS<gqrtl::Relation8> search(state.getCSP(), NULL);
+			if (!search.run())
+				return false;
+			state.resetToLastState();
+
+		}
+	
+	return true;
+}
+
 void SubcommandDetectMin::makePairs(const size_t nodeNum){
 	for (size_t i = 0; i < nodeNum - 1; i++)
 		for (size_t j = i + 1; j < nodeNum; j++)
@@ -147,7 +170,11 @@ void SubcommandDetectMin::iniCSP(const size_t nodeNum, const size_t labelSize)
 
 
 
-SubcommandDetectMin::~SubcommandDetectMin() { delete calculus;}
+SubcommandDetectMin::~SubcommandDetectMin() { 
+	delete calculus;
+	delete csp;
+	delete current_state;
+}
 
 
 
