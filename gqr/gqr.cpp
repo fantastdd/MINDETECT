@@ -44,6 +44,7 @@
 #include "commands/SubcommandConsistency.h"
 
 #include "commands/SubcommandDetectMin.h"
+#include "commands/SubcommandDetectMUS.h"
 #include "commands/SubcommandTest.h"
 
 /**
@@ -81,6 +82,8 @@ static SubcommandAbstract* getSubcommand(const int argc, char *argv[]) {
 		return new SubcommandConsistency(args);
     if (s == "d" || s == "detectmin")
     	return new SubcommandDetectMin(args);
+    if (s == "mus")
+    	return new SubcommandDetectMUS(args);
     if (s == "test")
     	return new SubcommandTest(args);
 

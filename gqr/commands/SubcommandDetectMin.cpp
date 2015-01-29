@@ -42,14 +42,16 @@ int SubcommandDetectMin::run() {
 	makePairs(nodeNum);
 	uni = co->getUniversalRelation();
 
-	current_state->backupState();
+	count = 0;
+
+	
 	bool result = makeCSPs();
 	if(result){
 		std::cout << " CSP Instance Found\n";
 		current_state->resetToLastState();
 		gqrtl::CSP<gqrtl::Relation8, gqrtl::CalculusOperations<gqrtl::Relation8> > last_state = current_state->getCSP();
 
-		//reportCSP(last_state);
+		reportCSP(last_state);
 		//std::cout << "is minimum: " << isMinimum(last_state);
 		//reportCSP(last_state);
 
@@ -88,7 +90,7 @@ bool SubcommandDetectMin::makeCSPs()
 		{
 			
 			current_state->setConstraint(lpair.first, lpair.second, *it);
-
+			current_state->backupState();
 
 			//check path consistency
 			bool path_consistent = true;			
@@ -205,6 +207,4 @@ SubcommandDetectMin::~SubcommandDetectMin() {
 	delete current_state;
 	
 }
-
-
 
