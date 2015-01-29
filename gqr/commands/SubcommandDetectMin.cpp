@@ -32,7 +32,7 @@ int SubcommandDetectMin::run() {
 	Logger* log = new Logger("log", 3 * 1000);
 	log->start();
 
-	size_t nodeNum = 5;
+	size_t nodeNum = 6;
 	size_t labelSize = 2;
 
 	makeRels(labelSize);
@@ -82,13 +82,13 @@ bool SubcommandDetectMin::makeCSPs()
 		std::pair<size_t, size_t> lpair = unusedPairs.back();
 		unusedPairs.pop_back();
 		//std::cout << unusedPairs.size() << "  " << total -1 << (unusedPairs.size() == total - 1);
-		if (unusedPairs.size() == total - 1)
-			std::cerr << " switch to branch " << ++ count;
+		
 
 
 		for (std::vector<Relation>::iterator it = unusedRels.begin(); it != unusedRels.end(); it++)
 		{
-			
+			if (unusedPairs.size() == total - 1)
+				std::cerr << " switch to branch " << ++ count;
 			current_state->setConstraint(lpair.first, lpair.second, *it);
 			current_state->backupState();
 
