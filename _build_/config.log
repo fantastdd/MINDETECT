@@ -1,6 +1,6 @@
-# project gqr (1500) configured on Tue Jan 27 17:33:34 2015 by
+# project gqr (1500) configured on Thu Jan 29 11:52:37 2015 by
 # waf 1.5.19 (abi 7, python 20706f0 on linux2)
-# using ./waf configure --devel
+# using ./waf configure
 #
 
 ----------------------------------------

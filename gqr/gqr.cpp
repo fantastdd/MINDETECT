@@ -44,6 +44,7 @@
 #include "commands/SubcommandConsistency.h"
 
 #include "commands/SubcommandDetectMin.h"
+#include "commands/SubcommandTest.h"
 
 /**
  * Generic solver for binary constraint networks.
@@ -66,7 +67,10 @@ static SubcommandAbstract* getSubcommand(const int argc, char *argv[]) {
 	// Then delegate the parameter parsing to the specific command
 
 	if (s == "help")
+	{
+		
 		return new SubcommandHelp(args);
+	}
 	if (s == "version")
 		return new SubcommandVersion(args);
 	if (s == "check")
@@ -76,10 +80,9 @@ static SubcommandAbstract* getSubcommand(const int argc, char *argv[]) {
 	if (s == "c" || s == "consistency")
 		return new SubcommandConsistency(args);
     if (s == "d" || s == "detectmin")
-    {
-    		
-        	return new SubcommandDetectMin(args);
-    }
+    	return new SubcommandDetectMin(args);
+    if (s == "test")
+    	return new SubcommandTest(args);
 
 
 /*

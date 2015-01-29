@@ -107,6 +107,7 @@ def build(bld):
       commands/SubcommandPathConsistency.cpp
       commands/SubcommandConsistency.cpp
       commands/SubcommandDetectMin.cpp
+      commands/SubcommandTest.cpp
       '''
 #      commands/SubcommandMinCsp.cpp
 #      commands/SubcommandMultiConsistency.cpp

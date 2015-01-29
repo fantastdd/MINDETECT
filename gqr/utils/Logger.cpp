@@ -104,6 +104,12 @@ void Logger::postDFSLog(const gqrtl::DFSReport& dfs) {
 	const size_t steps = dfs.number_positive_decisions;
 	postLog(out.str(), steps, unit);
 }
+void Logger::reportPassedTime()
+{
+	const long int timeSinceStart = endTime.msec_passed(startTime);
+	std::cout << "cpu_and_sys_msec=";
+	std::cout << ((double) timeSinceStart/1000.0) << std::endl;
+}
 
 void Logger::finalReport(const bool s, const gqrtl::DFSReport& dfs) {
 	assert(finished);

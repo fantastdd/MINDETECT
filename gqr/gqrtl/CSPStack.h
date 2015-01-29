@@ -85,7 +85,12 @@ class CSPStack {
 			trail.pop_back();
 		}
 
-		void resetToInitialState() { while(!trail.empty()) resetToLastState(); }
+		void resetToInitialState() { 
+			while(!trail.empty()){
+				
+				resetToLastState(); 
+			}
+		}
 
 		// read a value
 		inline const R& getValue(const Tuple& t) const { return csp.getConstraint(t.x, t.y); }

@@ -74,6 +74,7 @@ class Logger {
 
 		// Logger with associated interval
 		Logger(const std::string& n, const long int);
+		void reportPassedTime();
 };
 
 #endif
