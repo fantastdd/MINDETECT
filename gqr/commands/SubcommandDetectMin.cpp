@@ -42,6 +42,7 @@ int SubcommandDetectMin::run() {
 	makePairs(nodeNum);
 	uni = co->getUniversalRelation();
 
+	current_state->backupState();
 	bool result = makeCSPs();
 	if(result){
 		std::cout << " CSP Instance Found\n";
@@ -82,12 +83,13 @@ bool SubcommandDetectMin::makeCSPs()
 		if (unusedPairs.size() == total - 1)
 			std::cerr << " switch to branch " << ++ count;
 
+
 		for (std::vector<Relation>::iterator it = unusedRels.begin(); it != unusedRels.end(); it++)
 		{
 			
 			current_state->setConstraint(lpair.first, lpair.second, *it);
 
-			current_state->backupState();
+
 			//check path consistency
 			bool path_consistent = true;			
 			//path_consistent = (propagation.enforce(*current_state).empty());
