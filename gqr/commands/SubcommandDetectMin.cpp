@@ -3,6 +3,7 @@
 #include <cassert>
 #include <iostream>
 #include <sstream>
+#include <fstream>
 
 #include "Calculus.h"
 #include "Relation.h"
@@ -11,6 +12,7 @@
 #include "gqrtl/CSPStack.h"
 #include "gqrtl/RelationFixedBitset.h"
 
+#include "FileSplitter.h"
 
 #include "gqrtl/WeightedTripleIterator.h"
 #include "gqrtl/DFS.h"
@@ -26,15 +28,85 @@ SubcommandDetectMin::SubcommandDetectMin(const std::vector<std::string>& a): Sub
 	co = new gqrtl::CalculusOperations<gqrtl::Relation8>(*calculus);
 	}
 
+bool SubcommandDetectMin::parseUnusedArgs() {
+	std::vector<std::string> new_unused;
+	bool skip = false;
+	for (size_t i = 0; i < unusedArgs.size(); i++) {
+		if (skip) {
+			skip = false;
+			continue;
+		}
+		if (unusedArgs[i] == "-c") {
+			if (i+1 == unusedArgs.size()) {
+				std::cerr << "Missing argument \"-c\"\n";
+				return false;
+			}
+			if (!calculus) return false; // TODO: not sure when/if this can happen
+
+			if (calculus->getSplitter() != NULL) {
+				std::cerr << "More than one cover set specified\n";
+				return false;
+			}
+
+			skip = true;
+			if (!setSplitter(unusedArgs[i+1]))
+				return false;
+		}
+	}
+
+	unusedArgs = new_unused;
+
+	#ifndef NDEBUG
+	if (!unusedArgs.empty()) {
+		std::cout << "Remaining (unparsed) arguments:\n";
+		for (size_t i = 0; i < unusedArgs.size(); i++)
+			std::cout << "\t" << unusedArgs[i] << std::endl;
+		std::cout << std::endl;
+	}
+	#endif
+
+	return true;
+}
+bool SubcommandDetectMin::setSplitter(const std::string& name) {
+	Logger splitterTime("Cover set load time", 0);
+	splitterTime.start();
+
+	std::ifstream input;
+
+	for (size_t i = 0; i < dataDirs.size(); i++) {
+		const std::string& dataDir = dataDirs[i];
+		const std::string algFilename = dataDir + "/" + calculus->getName() + "/calculus/" + name + "alg";
+#ifndef NDEBUG
+std::cout << "Trying to read cover set \"" << name << "\" from \"" << algFilename << "\"\n";
+#endif
+		input.open(algFilename.c_str());
+		if (input.is_open())
+			break;
+	}
+	if (!input.is_open()) { // TODO: move somewhere else
+		std::cerr << "Failed to find splitter \"" << name << "\"\n";
+		return false;
+	}
+
+	Splitter* splitter = new FileSplitter(*calculus, &input);
+	calculus->setSplitter(splitter);
+
+	splitterTime.end();
+	if (verbose > 0)
+		splitterTime.postLog("", 1, "cover sets");
+
+	return true;
+}
+
 int SubcommandDetectMin::run() {
 
 
 	Logger* log = new Logger("log", 3 * 1000);
 	log->start();
 
-	size_t nodeNum = 6;
-	size_t labelSize = 2;
-
+	size_t nodeNum = 4;
+	size_t labelSize = 3;
+	std::cout << "Node Num: " << nodeNum << "  labelSize: " << labelSize << std::endl;
 	makeRels(labelSize);
 
 	iniCSP(nodeNum, labelSize);
@@ -123,6 +195,7 @@ bool SubcommandDetectMin::makeCSPs()
 				        //check minimum consistency
 				    		return true;
 				    }
+
 		        }
 			}		
 				//reset constraint;

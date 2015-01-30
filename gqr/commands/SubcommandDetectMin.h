@@ -15,7 +15,7 @@ class SubcommandDetectMin: public SubcommandAbstract{
     private:
          //typedef gqrtl::CSP<gqrtl::Relation8, gqrtl::CalculusOperations<gqrtl::Relation8> > CSPRep;
     	 std::vector<std::string> unusedArgs;
-    	 const Calculus* calculus;
+    	 Calculus* calculus;
          const gqrtl::CalculusOperations<gqrtl::Relation8>* co;
          size_t count, total;
          gqrtl::Relation8 uni; 
@@ -27,10 +27,10 @@ class SubcommandDetectMin: public SubcommandAbstract{
 
          gqrtl::CSPStack<gqrtl::Relation8, gqrtl::CalculusOperations<gqrtl::Relation8> >*  current_state;
 
-
+         bool setSplitter(const std::string& name);
          //gqrtl::WeightedTripleIterator<gqrtl::Relation8, gqrtl::CSPStack<gqrtl::Relation8, gqrtl::CalculusOperations<gqrtl::Relation8> > > propagation;
          gqrtl::WeightedTripleIterator<gqrtl::Relation8, gqrtl::CSP<gqrtl::Relation8, gqrtl::CalculusOperations<gqrtl::Relation8> > > propagation;
- 
+         bool parseUnusedArgs();
      	 void iniCSP(const size_t nodeNum, const size_t labelSize);
      	 void makeRels (const size_t labelSize);
      	 void makePairs(const size_t nodeNum);

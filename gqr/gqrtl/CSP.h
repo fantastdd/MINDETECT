@@ -30,6 +30,7 @@
 #include <iostream>
 #include "CSPSparse.h"
 
+#include <algorithm>
 // for conversion constructor
 class Calculus;
 class Relation;
@@ -113,7 +114,19 @@ class CSP {
 			matrix[getPos(y,x)] = calculus.getConverse(r);
 
 		}
+		/**
+	     * Remove a node 
 
+		
+		void removeNode(const size_t nodeIn, const R& universal)
+		{
+			std::fill(matrix.begin() + nodeIn * size, matrix.begin() + nodeIn * size + size, universal);
+			std::fill();
+		}
+	**/
+		void removeAll(const R& universal){
+			std::fill(matrix.begin(), matrix.end(), universal);
+		}
 		/** Get a constraint @param x a node @param y another node @return the relation between x and y */
 		inline const R& getConstraint(const size_t x, const size_t y) const {
 			// network should  normalized
